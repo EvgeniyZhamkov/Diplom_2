@@ -1,6 +1,7 @@
 package client;//
 
 import io.qameta.allure.Step;
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import constant.Constants;
 import static io.restassured.RestAssured.given;
@@ -62,7 +63,15 @@ public class ClientOperations {
                 .patch(Constants.USER_PATH);
         return response;
     }
+
+    public static Response getUser(String accessToken) {
+        return RestAssured.given()
+                .header("Authorization", accessToken) // Передаем токен авторизации
+                .when()
+                .get("/user"); // Укажите правильный эндпоинт для получения данных пользователя
+    }
 }
+
 
 
 

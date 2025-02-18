@@ -5,6 +5,10 @@ public class ClientEditedData {
     private String newPassword;
     private String newName;
 
+    // Конструктор по умолчанию
+    public ClientEditedData() {
+    }
+
     public ClientEditedData(String newEmail, String newPassword, String newName) {
         this.newEmail = newEmail;
         this.newPassword = newPassword;

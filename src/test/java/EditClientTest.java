@@ -37,18 +37,54 @@ public class EditClientTest {
     @DisplayName("Редактировать электронную почту авторизованного пользователя")
     @Description("Редактировать электронную почту авторизованного пользователя")
     public void editEmailAuthorizedUserGetSuccess() {
-
+        // Создаем нового пользователя
         Response responseCreating = ClientOperations.createUser(client);
-        //accessToken нужен для редактирования и последующего удаления юзера
-        accessToken = responseCreating.then().extract().path("accessToken").toString();
-        ClientOperations.editAuthorizedUser(accessToken, clientEditedData)
-                .then()
+
+        // Извлекаем accessToken для последующего использования
+        String accessToken = responseCreating.then().extract().path("accessToken").toString();
+
+        // Редактируем данные пользователя
+        Response responseEdit = ClientOperations.editAuthorizedUser(accessToken, clientEditedData);
+
+        // Проверяем статус-код и основные поля в ответе
+        responseEdit.then()
                 .assertThat()
-                .statusCode(HttpStatus.SC_OK)
+                .statusCode(HttpStatus.SC_OK) // Проверяем, что код ответа равен 200
                 .and()
-                .body("success", equalTo(true))
+                .body("success", equalTo(true)) // Проверяем, что success = true
                 .and()
-                .body("user", notNullValue());
+                .body("user", notNullValue()) // Проверяем, что поле user не null
+                .and()
+                .body("user.email", equalTo(client.getEmail())) // Проверяем, что email обновился корректно
+                .and()
+                .body("user.name", equalTo(client.getName())); // Проверяем, что name обновился корректно
+    }
+
+    @Test
+    @DisplayName("Редактировать имя авторизованного пользователя")
+    @Description("Редактировать имя авторизованного пользователя")
+    public void editNameAuthorizedUserGetSuccess() {
+        // Создаем нового пользователя
+        Response responseCreating = ClientOperations.createUser(client);
+
+        // Извлекаем accessToken для последующего использования
+        String accessToken = responseCreating.then().extract().path("accessToken").toString();
+
+        // Редактируем данные пользователя (в данном случае, имя)
+        Response responseEdit = ClientOperations.editAuthorizedUser(accessToken, clientEditedData);
+
+        // Проверяем статус-код и основные поля в ответе
+        responseEdit.then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_OK) // Проверяем, что код ответа равен 200
+                .and()
+                .body("success", equalTo(true)) // Проверяем, что success = true
+                .and()
+                .body("user", notNullValue()) // Проверяем, что поле user не null
+                .and()
+                .body("user.name", equalTo(client.getName())) // Проверяем, что имя обновилось корректно
+                .and()
+                .body("user.email", equalTo(client.getEmail())); // Проверяем, что email остался без изменений
     }
 
     @Test
